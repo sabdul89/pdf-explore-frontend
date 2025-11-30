@@ -1,13 +1,15 @@
-import React from 'react'
-import UploadPage from './pages/UploadPage'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import UploadPage from "./pages/UploadPage";
+import SharePage from "./pages/SharePage";
 
-export default function App(){ 
+export default function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
-      <div className="w-full max-w-3xl bg-white rounded-2xl shadow p-6">
-        <h1 className="text-2xl font-bold mb-4">PDF Explore — Upload & Parse</h1>
-        <UploadPage />
-      </div>
-    </div>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<UploadPage />} />
+        <Route path="/share" element={<SharePage />} />
+        <Route path="*" element={<div className='p-10 text-center'>404 - Not Found</div>} />
+      </Routes>
+    </Router>
+  );
 }

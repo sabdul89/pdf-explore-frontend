@@ -1,41 +1,49 @@
-import React, {useState} from 'react'
-import { uploadFile, parseFile } from '../api'
-import FieldEditor from '../components/FieldEditor'
+import { useState } from "react";
+import { uploadFile, getExtractedFields } from "../api";
 
-export default function UploadPage(){
-  const [file, setFile] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [fileId, setFileId] = useState(null)
-  const [schema, setSchema] = useState(null)
+export default function UploadPage() {
+  const [file, setFile] = useState(null);
+  const [fields, setFields] = useState(null);
+  const [shareLink, setShareLink] = useState("");
 
-  async function handleUpload(e){
-    const f = e.target.files[0]
-    if(!f) return
-    setFile(f)
-    setLoading(true)
-    try{
-      const upl = await uploadFile(f)
-      setFileId(upl.file_id)
-      // auto-parse after upload
-      const parsed = await parseFile(upl.file_id)
-      setSchema(parsed.json_schema || parsed.schema_json || parsed)
-    }catch(err){
-      alert(err?.response?.data?.detail || err.message)
-    }finally{
-      setLoading(false)
-    }
-  }
+  const handleUpload = async () => {
+    const form = new FormData();
+    form.append("file", file);
+
+    const res = await uploadFile(form);
+    const extracted = await getExtractedFields(res.file_id);
+    setFields(extracted.fields);
+
+    setShareLink(window.location.origin + "/share?id=" + res.file_id);
+  };
 
   return (
-    <div>
-      <label className="block mb-2 text-sm font-medium">Select PDF to upload</label>
-      <input type="file" accept="application/pdf" onChange={handleUpload} className="mb-4" />
-      {loading && <div className="text-sm text-gray-500">Uploading & parsing...</div>}
-      {schema && fileId && (
+    <div className="p-10 max-w-xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">PDF Explore — Upload & Parse</h1>
+
+      <input type="file" onChange={(e)=>setFile(e.target.files[0])} />
+      <button className="mt-4 p-2 bg-blue-500 text-white" onClick={handleUpload}>
+        Upload & Parse
+      </button>
+
+      {fields && (
         <div className="mt-6">
-          <FieldEditor fileId={fileId} schema={schema} />
+          <h2 className="text-xl font-semibold mb-2">Detected Fields</h2>
+          {fields.map(f=>(
+            <div key={f.key} className="mb-3">
+              <label className="block text-gray-600">{f.label}</label>
+              <input className="border p-2 w-full" defaultValue={f.sample_value} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {shareLink && (
+        <div className="mt-4 p-3 bg-gray-100">
+          <p className="text-sm">Share:</p>
+          <a className="text-blue-600" href={shareLink}>{shareLink}</a>
         </div>
       )}
     </div>
-  )
+  );
 }

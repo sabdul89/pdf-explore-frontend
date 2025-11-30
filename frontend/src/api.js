@@ -1,27 +1,14 @@
-import axios from 'axios'
+const API_BASE = import.meta.env.VITE_API_BASE;
 
-const BASE = import.meta.env.VITE_API_BASE || 'https://pdf-explore.onrender.com'
-
-export async function uploadFile(file){
-  const fd = new FormData()
-  fd.append('file', file)
-  const res = await axios.post(`${BASE}/upload/`, fd, {
-    headers: {'Content-Type': 'multipart/form-data'}
-  })
-  return res.data
+export async function uploadFile(formData) {
+  const res = await fetch(`${API_BASE}/upload/`, {
+    method: "POST",
+    body: formData
+  });
+  return res.json();
 }
 
-export async function parseFile(file_id){
-  const res = await axios.get(`${BASE}/parse/${file_id}`)
-  return res.data
-}
-
-export async function fillFile(file_id, values){
-  const res = await axios.post(`${BASE}/fill/${file_id}`, values)
-  return res.data
-}
-
-export async function createShare(file_id){
-  const res = await axios.post(`${BASE}/share/create/${file_id}`)
-  return res.data
+export async function getExtractedFields(fileId) {
+  const res = await fetch(`${API_BASE}/extract/${fileId}`);
+  return res.json();
 }
