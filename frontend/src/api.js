@@ -1,14 +1,26 @@
-const API_BASE = import.meta.env.VITE_API_BASE;
+/**
+ * api.js
+ * Centralized API base URL handling for local, Vercel, and production.
+ *
+ * Uses:
+ * - VITE_API_BASE (recommended for Vercel env vars)
+ * - window.location.origin fallback for frontend URL detection
+ * - Hardcoded fallback to Render backend
+ */
 
-export async function uploadFile(formData) {
-  const res = await fetch(`${API_BASE}/upload/`, {
-    method: "POST",
-    body: formData
-  });
-  return res.json();
-}
+export const API_BASE =
+  // 1️⃣ Use Vercel/Env override if provided
+  import.meta.env.VITE_API_BASE ||
 
-export async function getExtractedFields(fileId) {
-  const res = await fetch(`${API_BASE}/extract/${fileId}`);
-  return res.json();
-}
+  // 2️⃣ If running in browser, infer protocol + domain
+  (typeof window !== "undefined"
+    ? `${window.location.protocol}//${window.location.hostname.replace(
+        "localhost",
+        "127.0.0.1"
+      )}:8000` // local fallback
+    : null) ||
+
+  // 3️⃣ Final hardcoded fallback (production-safe)
+  "https://pdf-explore.onrender.com";
+
+console.log("🔗 Using API_BASE =", API_BASE);
