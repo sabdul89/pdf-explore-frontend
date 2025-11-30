@@ -8,7 +8,7 @@
 
 2. Create a `.env` file in project root with:
 
-   VITE_API_BASE=https://pdf-explore.onrender.com
+   VITE_API_BASE=
 
 3. Run dev
 
