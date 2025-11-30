@@ -1,58 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'
-import PdfViewer from '../components/PdfViewer'
-import RightPanel from '../components/RightPanel'
-import { convertToPdfPoints } from '../utils/coords'
-
 export default function Home() {
-  const [pdfUrl, setPdfUrl] = useState(null)
-  const [sections, setSections] = useState(() => { try { return JSON.parse(localStorage.getItem('docsy_sections')||'[]') } catch(e){return[]} })
-  const [fields, setFields] = useState([])
-  const viewerDimsRef = useRef({}) // { pageNumber: { renderedWidth, renderedHeight, pageDims } }
-
-  useEffect(()=>{ localStorage.setItem('docsy_sections', JSON.stringify(sections)) },[sections])
-
-  const handleUpload = (file) => setPdfUrl(URL.createObjectURL(file))
-
-  // Convert all sections to PDF points using viewerDimsRef data
-  const runDetection = async () => {
-    if (!pdfUrl) return alert('Upload a PDF first')
-    const pdfRegions = sections.map(s => {
-      const dims = viewerDimsRef.current[s.page] || { renderedWidth: 800, renderedHeight: 1000, pageDims: { width: 612, height: 792 } }
-      const rendered = { width: dims.renderedWidth, height: dims.renderedHeight }
-      return convertToPdfPoints(s, dims.pageDims, rendered)
-    })
-
-    const res = await fetch('/api/detect', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ pdfRegions })
-    })
-    const body = await res.json()
-    setFields(body.fields)
-  }
-
   return (
-    <div className="min-h-screen p-6 grid grid-cols-12 gap-6">
-      <div className="col-span-8">
-        <PdfViewer
-          pdfUrl={pdfUrl}
-          onUpload={handleUpload}
-          sections={sections}
-          setSections={setSections}
-          fields={fields}
-          setFields={setFields}
-          viewerDimsRef={viewerDimsRef}
-        />
-      </div>
-      <div className="col-span-4">
-        <RightPanel
-          sections={sections}
-          setSections={setSections}
-          fields={fields}
-          setFields={setFields}
-          onDetect={runDetection}
-        />
-      </div>
+    <div className="p-10">
+      <h1 className="text-3xl font-bold">Docsy PDF Viewer</h1>
+      <p className="text-gray-600 mt-4">Frontend scaffold is working.</p>
     </div>
-  )
+  );
 }

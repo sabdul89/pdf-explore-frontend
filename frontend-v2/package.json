@@ -1,5 +1,5 @@
 {
-  "name": "docsy-nextjs-production",
+  "name": "docsy-frontend",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -9,18 +9,25 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "14.1.0",
+    "@headlessui/react": "^1.7.18",
+    "@heroicons/react": "^2.1.5",
+    "@use-gesture/react": "^10.3.0",
+    "clsx": "^2.1.1",
+    "next": "14.2.3",
+    "pdfjs-dist": "^4.3.136",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-pdf": "7.6.0",
-    "pdfjs-dist": "3.9.179",
-    "clsx": "1.2.1"
+    "react-pdf": "^7.7.1",
+    "react-rnd": "^10.4.0",
+    "tailwind-merge": "^2.2.1"
   },
   "devDependencies": {
-    "autoprefixer": "10.4.14",
-    "postcss": "8.4.24",
-    "tailwindcss": "4.4.2",
-    "eslint": "8.50.0",
-    "eslint-config-next": "14.1.0"
+    "@types/react": "^18.2.60",
+    "@types/react-dom": "^18.2.20",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.3",
+    "postcss": "^8.4.33",
+    "tailwindcss": "^3.4.10"
   }
 }
